@@ -6,7 +6,7 @@ import { GoogleMap, useJsApiLoader, Marker, Polyline } from '@react-google-maps/
 // Harita stilleri
 const mapContainerStyle = {
   width: '100%',
-  height: '500px', // Yükseklik pmp/page.tsx'ten yönetiliyor
+  height: '100%', // Yükseklik pmp/page.tsx'ten yönetiliyor
   borderRadius: '8px',
 };
 
@@ -74,9 +74,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   if (!isLoaded) return <div className="text-slate-400 p-4">Harita yükleniyor...</div>;
 
   // Harita yüklendiyse, 'google.maps' objesini güvenle kullanabiliriz.
-  // Her bir ikon objesini doğrudan 'google.maps.Symbol' tipine uygun şekilde tanımlıyoruz.
-  // Bu, 'path' özelliğinin her zaman tanımlı olmasını garanti eder.
-  const googleMapsSymbolPath = google.maps.SymbolPath; // Kısa referans için
+  const googleMapsSymbolPath = google.maps.SymbolPath;
 
   const busIcon: google.maps.Symbol = {
     // Tip 'google.maps.Symbol' olarak belirlendi
@@ -94,7 +92,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   };
 
   const chargeStationIcon: google.maps.Symbol = {
-    // Tip 'google.maps.Symbol' olarak belirlendi
     path: googleMapsSymbolPath.CIRCLE,
     fillColor: 'lime',
     fillOpacity: 1,
@@ -104,7 +101,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   };
 
   const trafficLightIcon: google.maps.Symbol = {
-    // Tip 'google.maps.Symbol' olarak belirlendi
     path: googleMapsSymbolPath.CIRCLE,
     fillColor: vehicleSpeed !== undefined && vehicleSpeed < 1 ? 'red' : 'green',
     fillOpacity: 1,
@@ -114,7 +110,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   };
 
   const restAreaIcon: google.maps.Symbol = {
-    // Tip 'google.maps.Symbol' olarak belirlendi
     path: googleMapsSymbolPath.CIRCLE,
     fillColor: 'cyan',
     fillOpacity: 1,
@@ -123,7 +118,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   };
 
   const trafficJamIcon: google.maps.Symbol = {
-    // Tip 'google.maps.Symbol' olarak belirlendi
     path: googleMapsSymbolPath.CIRCLE,
     fillColor: 'gray',
     fillOpacity: 1,
@@ -133,7 +127,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   };
 
   const tollGateIcon: google.maps.Symbol = {
-    // Tip 'google.maps.Symbol' olarak belirlendi
     path: googleMapsSymbolPath.CIRCLE,
     fillColor: 'purple',
     fillOpacity: 1,

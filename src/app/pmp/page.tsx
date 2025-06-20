@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // React, useState, useEffect importlarını kontrol edin
 import usePollingData from '../hooks/usePollingData';
 import LineChart from '../../components/LineChart';
 import GoogleMapComponent from '../../components/GoogleMapComponent';
@@ -182,7 +182,7 @@ const DashboardPage = () => {
       alert(`Komut gönderildi: ${result.message}`);
     } catch (err: any) {
       console.error('Komut gönderme hatası:', err.message);
-      alert(`Komut gönderme hatası: ${err.message}. Python komut sunucusu çalışıyor mu?`);
+      alert(`Komut gönderme hatası: ${err.message}. Python komut sunucusu çalışıyor mi?`);
     }
   };
 
@@ -517,8 +517,6 @@ const DashboardPage = () => {
         {Maps_API_KEY && busLocation && (
           <div id="bus-map" className="mb-8">
             <div className="relative overflow-hidden h-[450px]">
-              {' '}
-              {/* Harita yüksekliği h-72'den h-[450px]'e çıkarıldı */}
               <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl blur-xl"></div>
               <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">

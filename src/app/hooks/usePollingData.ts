@@ -19,7 +19,7 @@ interface BusData {
   motorCurrent: number;
   motorVoltage: number;
   motorTemperature: number;
-  motorStatus: string; // <-- YENİ EKLENDİ
+  motorStatus: string;
 
   batterySOC: number;
   batteryVoltage: number;
@@ -57,12 +57,13 @@ interface BusData {
 }
 
 interface PollingOptions {
-  intervalMs?: number;
+  intervalMs?: number; // Sorgulama aralığı (milisaniye)
   initialData?: BusData[];
 }
 
 const usePollingData = (url: string, options?: PollingOptions) => {
-  const { intervalMs = 500, initialData = [] } = options || {};
+  // intervalMs'i 1000ms (1 saniye) olarak ayarlıyoruz (Performans ve akıcılık dengesi için)
+  const { intervalMs = 1000, initialData = [] } = options || {};
   const [data, setData] = useState<BusData[]>(initialData);
   const [latestData, setLatestData] = useState<BusData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -103,13 +104,13 @@ const usePollingData = (url: string, options?: PollingOptions) => {
 
   useEffect(() => {
     isMounted.current = true;
-    fetchData();
+    fetchData(); // Bileşen yüklendiğinde ilk çekimi yap
 
-    const intervalId = setInterval(fetchData, intervalMs);
+    const intervalId = setInterval(fetchData, intervalMs); // <-- setInterval geri eklendi!
 
     return () => {
       isMounted.current = false;
-      clearInterval(intervalId);
+      clearInterval(intervalId); // <-- clearInterval geri eklendi!
     };
   }, [url, intervalMs]);
 
