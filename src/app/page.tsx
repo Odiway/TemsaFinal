@@ -9,7 +9,7 @@ export default function HomePage() {
       style={{
         minHeight: '100vh',
         minWidth: '100vw',
-        backgroundImage: "url('/temsa-social.png')",
+        backgroundImage: "url('/temsa-social.png')", // Resim yolu doğru olduğundan emin olun
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -17,7 +17,7 @@ export default function HomePage() {
     >
       <div className="relative w-full max-w-5xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-16 flex flex-col items-center animate-fade-in">
         <Image
-          src="/logo.png"
+          src="/logo.png" // Resim yolu doğru olduğundan emin olun
           alt="TEMSA Ar-Ge Batarya"
           className="w-36 h-36 mb-8 drop-shadow-lg animate-bounce-slow"
           width={144}
@@ -32,10 +32,10 @@ export default function HomePage() {
           Projenize hoş geldiniz!
         </p>
         <a
-          href="/auth/Login"
+          href="/pmp" // <-- Burayı değiştirdik! Artık doğrudan dashboard'a gidiyor
           className="inline-block bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600 text-white font-bold py-4 px-16 rounded-full shadow-lg transition-all duration-200 scale-100 hover:scale-105 text-xl"
         >
-          Giriş Yap
+          Dashboard'a Git {/* Buton metni de daha açıklayıcı olsun */}
         </a>
 
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-100 rounded-full blur-2xl opacity-60 animate-pulse" />

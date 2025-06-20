@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     "src/app/pmp/page.js",
     "src/app/api/can-data.js"
-  ],
+, "src/app/api/can-data/route.js"  ],
   "exclude": ["node_modules"]
 }

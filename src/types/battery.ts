@@ -35,3 +35,27 @@ export interface SimulationInput {
   totalCycles: number;
   lineNumber: number;
 }
+// types/battery.ts
+export interface BatteryData {
+  id: string; // Benzersiz batarya kimliği (örn. seri numarası)
+  name: 'tres 35' | 'tres 45' | 'tres 75' | 'tres 102'; // Batarya modeli
+  production: {
+    date: string; // YYYY-AA-GG
+    materials: string[]; // Kullanılan malzemelerin listesi
+    builders: string[]; // İnşa eden kişilerin isimleri/kimlikleri
+  };
+  repairHistory: {
+    date: string; // YYYY-AA-GG
+    issue: string; // Sorunun açıklaması
+    cause: string; // Sorunun nedeni
+    process: string; // Soruna neden olan süreç
+    repairedBy: string[]; // Tamir eden kişilerin isimleri/kimlikleri
+  }[];
+  productionIssues: {
+    date: string; // YYYY-AA-GG (sorunun tespit edildiği tarih)
+    issue: string; // Sorunun açıklaması
+    cause: string; // Sorunun nedeni
+    process: string; // Soruna neden olan süreç
+    identifiedBy: string[]; // Tespit eden kişilerin isimleri/kimlikleri
+  }[];
+}

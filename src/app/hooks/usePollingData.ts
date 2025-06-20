@@ -19,6 +19,7 @@ interface BusData {
   motorCurrent: number;
   motorVoltage: number;
   motorTemperature: number;
+  motorStatus: string; // <-- YENİ EKLENDİ
 
   batterySOC: number;
   batteryVoltage: number;

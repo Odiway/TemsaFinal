@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-// Kendi çalışan hook'umuzu ve bileşenlerimizi import ediyoruz
 import usePollingData from '../hooks/usePollingData';
 import LineChart from '../../components/LineChart';
 import GoogleMapComponent from '../../components/GoogleMapComponent';
@@ -18,6 +17,9 @@ import {
   Zap,
   Wind,
   Navigation,
+  SquareGanttChart,
+  Table,
+  Power,
 } from 'lucide-react';
 
 // Grafiklerde ve rotada tutulacak maksimum veri noktası (performans için önerilen, ancak kesme işlemi kaldırıldı)
@@ -68,7 +70,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
       </div>
       {/* Değer ve Başlık */}
       <div className="space-y-2">
-        <h3 className="text-slate-200 text-sm font-medium">{title}</h3> {/* Kontrast artırıldı */}
+        <h3 className="text-slate-200 text-sm font-medium">{title}</h3>
         <div className="flex items-baseline gap-2">
           <span className="text-2xl font-bold text-white">
             {typeof value === 'number' ? value.toFixed(1) : value}
@@ -80,7 +82,6 @@ const StatusCard: React.FC<StatusCardProps> = ({
     </div>
   </div>
 );
-// --- StatusCard Bileşeni Sonu ---
 
 const DashboardPage = () => {
   // Google Maps API Anahtarını .env.local'dan al
@@ -214,14 +215,13 @@ const DashboardPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100">
-      {' '}
-      {/* text-slate-100 ile genel metin rengi */}
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
+
       <div className="relative z-10 container mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -233,8 +233,7 @@ const DashboardPage = () => {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-cyan-200 to-blue-300 bg-clip-text text-transparent">
                 Elektrikli Otobüs Simülasyon
               </h1>
-              <p className="text-slate-300 mt-1">Gerçek zamanlı izleme ve kontrol paneli</p>{' '}
-              {/* Metin rengi düzeltildi */}
+              <p className="text-slate-300 mt-1">Gerçek zamanlı izleme ve kontrol paneli</p>
             </div>
           </div>
 
@@ -258,8 +257,42 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Navigasyon Linkleri */}
+        <div className="mb-8 flex flex-wrap gap-4 text-sm font-medium">
+          <a
+            href="#sim-controls"
+            className="px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors duration-200 flex items-center gap-2"
+          >
+            <Activity className="w-4 h-4" /> Kontroller
+          </a>
+          <a
+            href="#status-cards"
+            className="px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors duration-200 flex items-center gap-2"
+          >
+            <Gauge className="w-4 h-4" /> Anlık Durum
+          </a>
+          <a
+            href="#raw-data"
+            className="px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors duration-200 flex items-center gap-2"
+          >
+            <Table className="w-4 h-4" /> Ham Veriler
+          </a>
+          <a
+            href="#bus-map"
+            className="px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors duration-200 flex items-center gap-2"
+          >
+            <MapPin className="w-4 h-4" /> Harita
+          </a>
+          <a
+            href="#charts"
+            className="px-4 py-2 rounded-xl bg-slate-800/50 border border-slate-700/50 text-slate-300 hover:border-cyan-500/50 hover:text-cyan-400 transition-colors duration-200 flex items-center gap-2"
+          >
+            <SquareGanttChart className="w-4 h-4" /> Grafikler
+          </a>
+        </div>
+
         {/* Control Panel */}
-        <div className="mb-8">
+        <div id="sim-controls" className="mb-8">
           <div className="relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl blur-xl"></div>
             <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8">
@@ -360,7 +393,7 @@ const DashboardPage = () => {
 
         {/* Status Cards */}
         {currentBusState && (
-          <div className="mb-8">
+          <div id="status-cards" className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
               <Gauge className="w-7 h-7 text-cyan-400" />
               Anlık Otobüs Durumu: {currentBusState.busId}
@@ -444,20 +477,25 @@ const DashboardPage = () => {
                 icon={Activity}
                 subtitle={`Hedef: ${currentBusState.currentCity}`}
               />
+              <StatusCard
+                title="Motor Durumu"
+                value={currentBusState.motorStatus === 'on' ? 'Açık' : 'Kapalı'}
+                icon={Power}
+                status={currentBusState.motorStatus === 'on' ? 'normal' : 'warning'}
+              />
             </div>
           </div>
         )}
 
-        {/* Tüm Ham Veriler Tablosu (YENİ EKLENDİ) */}
+        {/* Tüm Ham Veriler Tablosu */}
         {currentBusState && (
-          <div className="mb-8">
+          <div id="raw-data" className="mb-8">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-              <Activity className="w-7 h-7 text-cyan-400" />
+              <Table className="w-7 h-7 text-cyan-400" />
               Tüm Ham Veriler
             </h2>
             <div className="bg-white/5 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-xl max-h-96 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 text-sm text-slate-300">
-                {/* Object.entries ile tüm veriyi listele */}
                 {Object.entries(currentBusState).map(([key, value]) => (
                   <div key={key} className="flex items-center">
                     <span className="font-medium text-slate-400 w-1/2 break-words pr-2">
@@ -477,10 +515,10 @@ const DashboardPage = () => {
 
         {/* Map */}
         {Maps_API_KEY && busLocation && (
-          <div className="mb-8">
-            <div className="relative overflow-hidden h-72">
+          <div id="bus-map" className="mb-8">
+            <div className="relative overflow-hidden h-[450px]">
               {' '}
-              {/* Harita yüksekliği ayarlandı */}
+              {/* Harita yüksekliği h-72'den h-[450px]'e çıkarıldı */}
               <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl blur-xl"></div>
               <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8">
                 <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
@@ -492,6 +530,11 @@ const DashboardPage = () => {
                   busLocation={busLocation}
                   busId={currentBusState?.busId || 'Otobüs'}
                   routePath={routePath}
+                  bearingDegrees={currentBusState.bearing_degrees}
+                  weatherCondition={currentBusState.weatherCondition}
+                  currentRouteAction={currentBusState.current_route_action}
+                  chargingStatus={currentBusState.chargingStatus}
+                  vehicleSpeed={currentBusState.vehicleSpeed}
                 />
               </div>
             </div>
@@ -499,16 +542,14 @@ const DashboardPage = () => {
         )}
 
         {/* Charts */}
-        <div className="space-y-8">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <Activity className="w-7 h-7 text-cyan-400" />
+        <div id="charts" className="space-y-8">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+            <SquareGanttChart className="w-7 h-7 text-cyan-400" />
             Gerçek Zamanlı Grafikler
           </h2>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            <div className="h-64">
-              {' '}
-              {/* Grafik 1 yüksekliği ayarlandı */}
+            <div className="h-64 bg-white/5 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-xl">
               <LineChart
                 title="Hız Takibi"
                 labels={labels}
@@ -519,9 +560,7 @@ const DashboardPage = () => {
                 max={100}
               />
             </div>
-            <div className="h-64">
-              {' '}
-              {/* Grafik 2 yüksekliği ayarlandı */}
+            <div className="h-64 bg-white/5 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-xl">
               <LineChart
                 title="Batarya Şarj Durumu"
                 labels={labels}
@@ -532,9 +571,7 @@ const DashboardPage = () => {
                 max={100}
               />
             </div>
-            <div className="h-64">
-              {' '}
-              {/* Grafik 3 yüksekliği ayarlandı */}
+            <div className="h-64 bg-white/5 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-xl">
               <LineChart
                 title="Sıcaklık İzleme"
                 labels={labels}
@@ -555,9 +592,7 @@ const DashboardPage = () => {
                 max={150}
               />
             </div>
-            <div className="h-64">
-              {' '}
-              {/* Grafik 4 yüksekliği ayarlandı */}
+            <div className="h-64 bg-white/5 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-xl">
               <LineChart
                 title="Sistem Parametreleri"
                 labels={labels}
