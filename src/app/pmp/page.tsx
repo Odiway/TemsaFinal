@@ -1,3 +1,4 @@
+// src/app/pmp/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react'; // React, useState, useEffect importlarını kontrol edin
@@ -517,23 +518,32 @@ const DashboardPage = () => {
         {Maps_API_KEY && busLocation && (
           <div id="bus-map" className="mb-8">
             <div className="relative overflow-hidden h-[450px]">
+              {/* Added a solid background to the blurred div to ensure it has a color even if inner content isn't there */}
               <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 rounded-3xl blur-xl"></div>
-              <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+              {/* IMPORTANT: Added 'flex', 'flex-col', and 'h-full' here */}
+              <div className="relative bg-gradient-to-br from-slate-900/80 to-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 flex flex-col h-full">
+                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3 flex-shrink-0">
+                  {' '}
+                  {/* Added flex-shrink-0 */}
                   <MapPin className="w-7 h-7 text-cyan-400" />
                   Otobüs Konumu
                 </h2>
-                <GoogleMapComponent
-                  apiKey={Maps_API_KEY}
-                  busLocation={busLocation}
-                  busId={currentBusState?.busId || 'Otobüs'}
-                  routePath={routePath}
-                  bearingDegrees={currentBusState.bearing_degrees}
-                  weatherCondition={currentBusState.weatherCondition}
-                  currentRouteAction={currentBusState.current_route_action}
-                  chargingStatus={currentBusState.chargingStatus}
-                  vehicleSpeed={currentBusState.vehicleSpeed}
-                />
+                {/* IMPORTANT: Added 'flex-1' here so the map container takes the remaining height */}
+                <div className="flex-1 rounded-md overflow-hidden">
+                  {' '}
+                  {/* Added rounded-md and overflow-hidden for map appearance */}
+                  <GoogleMapComponent
+                    apiKey={Maps_API_KEY}
+                    busLocation={busLocation}
+                    busId={currentBusState?.busId || 'Otobüs'}
+                    routePath={routePath}
+                    bearingDegrees={currentBusState.bearing_degrees}
+                    weatherCondition={currentBusState.weatherCondition}
+                    currentRouteAction={currentBusState.current_route_action}
+                    chargingStatus={currentBusState.chargingStatus}
+                    vehicleSpeed={currentBusState.vehicleSpeed}
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -6,21 +6,17 @@ import './globals.css';
 import { AuthProvider } from './auth/context';
 import Sidebar from '../components/Sidebar';
 import { Inter } from 'next/font/google';
-import React, { useState, useCallback } from 'react'; // React, useState, useCallback import edildi
+import React, { useState, useCallback } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
-// Metadata kısmı kaldırıldı (isteğiniz üzerine)
-// export const metadata = {
-//   title: 'TEMSA Batarya Simülasyonu',
-//   description: 'Elektrikli Otobüs Simülasyonu ve Envanter Yönetim Paneli',
-// };
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarWidth, setSidebarWidth] = useState('256px'); // Varsayılan açık sidebar genişliği (w-64)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Sidebar'ın mobil durumu
+  // Sidebar'ın anlık genişliğini tutan state
+  const [sidebarWidth, setSidebarWidth] = useState('256px');
+  // Mobil menünün açık olup olmadığını tutan state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Sidebar'dan gelen genişlik bilgisini ve mobil durumunu yakalamak için
+  // Sidebar'dan gelen state değişikliklerini yakalamak için callback
   const handleSidebarStateChange = useCallback((newWidth: string, mobileOpen: boolean) => {
     setSidebarWidth(newWidth);
     setIsMobileMenuOpen(mobileOpen);
@@ -29,34 +25,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="tr">
       <head>
+        {/* Sayfa içi gezinti için yumuşak kaydırma */}
         <style>{`
           html {
-            scroll-behavior: smooth; /* Sayfa içi kaydırmayı yumuşatır */
+            scroll-behavior: smooth;
           }
-          /* Sidebar genişliğini CSS değişkeni olarak ayarla */
+          /* CSS değişkeni tanımlayarak sidebar genişliğini global olarak erişilebilir yapıyoruz */
           :root {
             --sidebar-static-width: ${sidebarWidth};
           }
-          /* Masaüstünde sidebar genişliğine göre main içeriğini it */
-          @media (min-width: 1024px) { /* lg breakpoint */
-            body > div { /* flex kapsayıcısı */
+          /* Masaüstü görünümünde (lg breakpoint ve üzeri) ana içeriğe sidebar kadar padding ekle */
+          /* Bu, ana içeriğin sidebar'ın arkasına kaymasını engeller */
+          @media (min-width: 1024px) {
+            /* body > div: flex kapsayıcımız olan div'i temsil eder */
+            body > div {
               padding-left: var(--sidebar-static-width);
-              transition: padding-left 0.3s ease-in-out; /* Yumuşak geçiş */
+              transition: padding-left 0.3s ease-in-out; /* Genişlik değişimleri için yumuşak geçiş */
             }
           }
-          /* Mobil menü açıkken ana içeriği kilitleme */
+          /* Mobil menü açıkken sayfa kaydırmayı engelle (arka plan içeriğinin kaymasını önler) */
           ${
             isMobileMenuOpen
               ? `
             body {
-              overflow: hidden; /* Mobil menü açıkken body kaydırmayı engelle */
+              overflow: hidden;
             }
           `
               : ''
           }
         `}</style>
       </head>
-      {/* Genel arka plan ve metin rengi body'e verildi */}
       <body
         className={
           inter.className +
@@ -64,16 +62,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         }
       >
         <AuthProvider>
-          {/* Ana Layout Kapsayıcısı: Sidebar ve İçeriği yan yana konumlandırır */}
+          {/* Ana layout yapısı: Sidebar ve içerik için esnek kutu */}
+          {/* min-h-screen ile div'in en az viewport yüksekliği kadar olmasını sağla */}
           <div className="flex min-h-screen">
-            {/* Sidebar bileşeni, state değişikliğini parent'a (RootLayout'a) bildiriyor */}
+            {/* Sidebar bileşeni, state değişikliklerini bildirir */}
             <Sidebar onStateChange={handleSidebarStateChange} />
 
-            {/* Ana İçerik Alanı: Geriye kalan tüm alanı kaplar ve kendi içinde kaydırılabilir olur */}
-            {/* Masaüstünde padding-left artık CSS değişkeni ile ayarlandığı için inline style'a gerek yok */}
-            <main className="flex-1 overflow-y-auto">{children}</main>
+            {/* Ana içerik alanı */}
+            {/* flex-1: Kalan alanı doldurmasını sağlar */}
+            {/* overflow-y-auto: İçerik taştığında dikey kaydırma çubuğu ekler */}
+            {/* Bu 'main' etiketinin de min-h-screen'i miras alması veya dolaylı olarak alması önemlidir */}
+            <main className="flex-1 overflow-y-auto">
+              {children} {/* Sayfa bileşenleri burada render edilir */}
+            </main>
           </div>
-          {/* AIAssistant genelde en dışta veya footer yakınında olur */}
+          {/* AI Asistanı bileşeni */}
           <AIAssistant />
         </AuthProvider>
       </body>
