@@ -103,7 +103,9 @@ ${aiAnswer}
     try {
       const body = await request.json();
       question = body.question || '';
-    } catch {}
+    } catch (err) {
+      //hi
+    }
 
     return NextResponse.json({
       answer: `🔧 **AI Geçici Olarak Kullanılamıyor**

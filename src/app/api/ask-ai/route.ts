@@ -126,7 +126,9 @@ ${generateFallbackAnswer(question)}
     try {
       const body = await request.json();
       question = body.question || '';
-    } catch {}
+    } catch (err) {
+      //hi
+    }
 
     const fallbackAnswer = generateFallbackAnswer(question);
 

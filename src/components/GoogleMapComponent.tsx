@@ -39,11 +39,10 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   bearingDegrees,
   weatherCondition,
   currentRouteAction,
-  chargingStatus,
   vehicleSpeed,
 }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
-  const [currentCenter, setCurrentCenter] = useState(defaultCenter);
+  const [currentCenter] = useState(defaultCenter);
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',

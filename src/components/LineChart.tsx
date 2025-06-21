@@ -11,7 +11,11 @@ import {
   Legend,
 } from 'chart.js';
 
+import type { ChartData, ChartOptions } from 'chart.js';
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+// rest of your code ...
 
 // Props için interface tanımlayalım
 interface LineChartProps {

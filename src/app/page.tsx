@@ -35,7 +35,7 @@ export default function HomePage() {
           href="/pmp" // <-- Burayı değiştirdik! Artık doğrudan dashboard'a gidiyor
           className="inline-block bg-gradient-to-r from-blue-700 to-blue-500 hover:from-blue-800 hover:to-blue-600 text-white font-bold py-4 px-16 rounded-full shadow-lg transition-all duration-200 scale-100 hover:scale-105 text-xl"
         >
-          Dashboard'a Git {/* Buton metni de daha açıklayıcı olsun */}
+          Panele Git {/* Buton metni de daha açıklayıcı olsun */}
         </a>
 
         <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-100 rounded-full blur-2xl opacity-60 animate-pulse" />

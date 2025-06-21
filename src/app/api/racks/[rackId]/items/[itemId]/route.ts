@@ -1,63 +1,57 @@
-// src/app/api/racks/[rackId]/items/[itemId]/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { ObjectId } from 'mongodb';
+import { connectToDatabase } from '@/lib/mongodb';
 
-import { MongoClient, ObjectId } from 'mongodb';
-import { NextResponse } from 'next/server';
-import { connectToDatabase } from './../../../../../../lib/mongodb'; // <-- Import düzeltildi
-
-// Belirli bir ürünü PUT (güncelle)
-export async function PUT(
-  req: Request,
-  { params }: { params: { rackId: string; itemId: string } },
+export async function GET(
+  request: NextRequest,
+  context: { params: { rackId: string; itemId: string } },
 ) {
-  try {
-    const { rackId, itemId } = params;
-    const body = await req.json();
+  const { rackId, itemId } = context.params;
+  const { db } = await connectToDatabase();
 
-    const { mongoClient: client, db: database } = await connectToDatabase(); // <-- Kullanım düzeltildi
-    const collection = database.collection('items');
+  const item = await db.collection('items').findOne({ _id: new ObjectId(itemId), rackId });
 
-    const result = await collection.updateOne(
-      { _id: new ObjectId(itemId), rackId: rackId }, // Hem ID hem rackId ile eşleştir
+  if (!item) {
+    return NextResponse.json({ message: 'Item not found' }, { status: 404 });
+  }
+
+  return NextResponse.json(item);
+}
+
+export async function PUT(
+  request: NextRequest,
+  context: { params: { rackId: string; itemId: string } },
+) {
+  const { rackId, itemId } = context.params;
+  const body = await request.json();
+  const { db } = await connectToDatabase();
+
+  const result = await db
+    .collection('items')
+    .updateOne(
+      { _id: new ObjectId(itemId), rackId },
       { $set: { ...body, lastEditedAt: new Date() } },
     );
 
-    if (result.matchedCount === 0) {
-      return NextResponse.json({ message: 'Item not found in this rack' }, { status: 404 });
-    }
-
-    return NextResponse.json({ message: 'Item updated successfully' }, { status: 200 });
-  } catch (error: any) {
-    console.error('Error updating item:', error);
-    return NextResponse.json(
-      { message: 'Error updating item', error: error.message },
-      { status: 500 },
-    );
+  if (result.matchedCount === 0) {
+    return NextResponse.json({ message: 'Item not found' }, { status: 404 });
   }
+
+  return NextResponse.json({ message: 'Item updated successfully' });
 }
 
-// Belirli bir ürünü DELETE (sil)
 export async function DELETE(
-  req: Request,
-  { params }: { params: { rackId: string; itemId: string } },
+  request: NextRequest,
+  context: { params: { rackId: string; itemId: string } },
 ) {
-  try {
-    const { rackId, itemId } = params;
+  const { rackId, itemId } = context.params;
+  const { db } = await connectToDatabase();
 
-    const { mongoClient: client, db: database } = await connectToDatabase(); // <-- Kullanım düzeltildi
-    const collection = database.collection('items');
+  const result = await db.collection('items').deleteOne({ _id: new ObjectId(itemId), rackId });
 
-    const result = await collection.deleteOne({ _id: new ObjectId(itemId), rackId: rackId });
-
-    if (result.deletedCount === 0) {
-      return NextResponse.json({ message: 'Item not found in this rack' }, { status: 404 });
-    }
-
-    return NextResponse.json({ message: 'Item deleted successfully' }, { status: 200 });
-  } catch (error: any) {
-    console.error('Error deleting item:', error);
-    return NextResponse.json(
-      { message: 'Error deleting item', error: error.message },
-      { status: 500 },
-    );
+  if (result.deletedCount === 0) {
+    return NextResponse.json({ message: 'Item not found' }, { status: 404 });
   }
+
+  return NextResponse.json({ message: 'Item deleted successfully' });
 }

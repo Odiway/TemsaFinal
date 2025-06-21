@@ -1,6 +1,5 @@
 // src/app/api/racks/route.ts
 
-import { MongoClient, Db } from 'mongodb'; // Db import'u eklendi
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from './../../../lib/mongodb'; // <-- Import düzeltildi
 import { v4 as uuidv4 } from 'uuid'; // uuid kütüphanesini kullanacağız

@@ -12,7 +12,6 @@ import {
   Calendar,
   BookOpen,
   Bot,
-  Network,
   Repeat,
   Warehouse,
   Users,
@@ -30,7 +29,6 @@ import {
   Table,
   Zap,
   ChevronLeft,
-  ChevronRight,
   Sparkles,
 } from 'lucide-react';
 

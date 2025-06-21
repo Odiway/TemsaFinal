@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": true, // Keep this as true if possible
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "strictFunctionTypes": true, // Revert this to true (if it was originally true) or keep as is.
+    "strictNullChecks": true, // Revert this to true if you changed it to false.
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
@@ -19,16 +25,24 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    "src/app/api/can-data.js",
+    "src/app/api/can-data/route.ts",
     "src/app/pmp/page.js",
-    "src/app/api/can-data.js"
-, "src/app/api/can-data/route.js"  ],
-  "exclude": ["node_modules"]
+    "src/app/qrcode/page.js",
+    "src/components/BatteryTracker.jsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next"
+  ]
 }
