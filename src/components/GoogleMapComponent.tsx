@@ -1,4 +1,3 @@
-// src/components/GoogleMapComponent.tsx
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
