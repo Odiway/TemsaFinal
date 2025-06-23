@@ -42,7 +42,11 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   currentRouteAction,
   vehicleSpeed,
 }) => {
+  // mapRef will hold the Google Maps Map instance
   const mapRef = useRef<google.maps.Map | null>(null);
+  // componentRootRef will hold the DOM reference to the outermost div of this component
+  const componentRootRef = useRef<HTMLDivElement>(null);
+
   // Use a state for the map center, initialized with busLocation or defaultCenter
   const [currentMapCenter, setCurrentMapCenter] = useState(busLocation || defaultCenter);
 
@@ -60,10 +64,9 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     mapRef.current = null;
   }, []);
 
-  // Otobüs konumu değiştiğinde haritayı ortalamak için
+  // Center the map when busLocation changes
   useEffect(() => {
     if (busLocation) {
-      // Update the center state to pan the map
       setCurrentMapCenter(busLocation);
       // If the map instance is available, directly pan to the new location for smoother transition
       if (mapRef.current) {
@@ -72,18 +75,23 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     }
   }, [busLocation]);
 
-  // Harita yüklenirken veya hata oluşursa erken çıkış
+  // Handle loading and error states for the map script
   if (loadError)
     return (
-      <div className="text-red-400 p-4">Harita yüklenirken hata oluştu: {loadError.message}</div>
+      <div ref={componentRootRef} className="text-red-400 p-4">Harita yüklenirken hata oluştu: {loadError.message}</div>
     );
-  if (!isLoaded) return <div className="text-slate-400 p-4">Harita yükleniyor...</div>;
+  if (!isLoaded) return (
+    // Ensure that even in loading state, a div with a ref is returned for consistency
+    <div ref={componentRootRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <div className="text-slate-400 p-4">Harita yükleniyor...</div>
+    </div>
+  );
 
-  // Harita yüklendiyse, 'google.maps' objesini güvenle kullanabiliriz.
+  // If map is loaded, we can safely use 'google.maps'
   const googleMapsSymbolPath = google.maps.SymbolPath;
 
+  // Define bus marker icon based on current route action
   const busIcon: google.maps.Symbol = {
-    // Tip 'google.maps.Symbol' olarak belirlendi
     path: googleMapsSymbolPath.FORWARD_CLOSED_ARROW,
     fillColor:
       currentRouteAction === 'charge_station'
@@ -97,6 +105,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     rotation: bearingDegrees || 0,
   };
 
+  // Define icons for various points of interest/actions
   const chargeStationIcon: google.maps.Symbol = {
     path: googleMapsSymbolPath.CIRCLE,
     fillColor: 'lime',
@@ -141,6 +150,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     scale: 6,
   };
 
+  // Polyline options for the bus route
   const polylineOptions = {
     strokeColor: '#00BFFF',
     strokeOpacity: 0.8,
@@ -148,17 +158,19 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     geodesic: true,
   };
 
+  // Style for the weather overlay
   const weatherOverlayStyle: React.CSSProperties = {
     position: 'absolute',
     top: 0,
     left: 0,
     width: '100%',
     height: '100%',
-    pointerEvents: 'none',
-    zIndex: 1,
-    borderRadius: 'inherit',
+    pointerEvents: 'none', // Allow clicks to pass through to the map
+    zIndex: 1, // Ensure overlay is above the map but below other UI
+    borderRadius: 'inherit', // Inherit border-radius from parent container
   };
 
+  // Function to determine and return the weather overlay JSX
   const getWeatherOverlay = () => {
     switch (weatherCondition) {
       case 'rainy':
@@ -201,7 +213,8 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+    // The outermost div now has a ref, ensuring it's always referenceable
+    <div ref={componentRootRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={currentMapCenter} // Use the state variable for centering
@@ -213,6 +226,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
+          // Custom map styles for a darker theme
           styles: [
             { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
             { elementType: 'labels.text.stroke', stylers: [{ color: '#242f3e' }] },
@@ -295,10 +309,10 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
           ],
         }}
       >
-        {/* Rota çizgisi */}
+        {/* Polyline to show the bus's traversed route */}
         <Polyline path={routePath} options={polylineOptions} />
 
-        {/* Otobüsün mevcut konumu */}
+        {/* Marker for the current bus location */}
         {busLocation && (
           <Marker
             position={busLocation}
@@ -312,7 +326,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
           />
         )}
 
-        {/* Şarj İstasyonu İkonu */}
+        {/* Conditional markers for specific route actions */}
         {currentRouteAction === 'charge_station' && (
           <Marker
             position={busLocation || defaultCenter}
@@ -321,7 +335,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
           />
         )}
 
-        {/* Trafik Işığı İkonu */}
         {currentRouteAction === 'stop_traffic_light' && (
           <Marker
             position={busLocation || defaultCenter}
@@ -329,7 +342,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             icon={trafficLightIcon}
           />
         )}
-        {/* Dinlenme Alanı İkonu */}
         {currentRouteAction === 'stop_rest_area' && (
           <Marker
             position={busLocation || defaultCenter}
@@ -337,7 +349,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             icon={restAreaIcon}
           />
         )}
-        {/* Trafik Sıkışıklığı İkonu */}
         {currentRouteAction === 'stop_traffic_jam' && (
           <Marker
             position={busLocation || defaultCenter}
@@ -345,7 +356,6 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
             icon={trafficJamIcon}
           />
         )}
-        {/* Gişe İkonu */}
         {currentRouteAction === 'stop_toll_gate' && (
           <Marker
             position={busLocation || defaultCenter}
@@ -355,10 +365,10 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
         )}
       </GoogleMap>
 
-      {/* Hava durumu overlay'i */}
+      {/* Overlay for weather effects */}
       {getWeatherOverlay()}
 
-      {/* CSS animasyonlarını tanımla (bu kısmı globals.css'e de taşıyabilirsiniz) */}
+      {/* Inline CSS for weather animations */}
       <style jsx>{`
         .rain-effect {
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10'%3E%3Cg opacity='.5'%3E%3Cpath stroke='%23fff' stroke-width='1.5' stroke-linecap='round' d='M5 0v10'/%3E%3C/g%3E%3C/svg%3E");
