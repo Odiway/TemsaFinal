@@ -26,12 +26,12 @@ const RacksPage: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
   // QR kodlarının yönlendireceği ana URL. Kendi yerel IP adresinizi buraya yazın.
-  const BASE_QR_URL = 'http://192.168.208.167:3000'; // <-- BURAYI DEĞİŞTİRDİK! Kendi IP'niz ve portunuz
+  const BASE_QR_URL = 'https://temsa-final-ag81.vercel.app'; // <-- BURAYI DEĞİŞTİRDİK! Kendi IP'niz ve portunuz
 
   const fetchRacks = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/racks');
+      const response = await fetch('/racks');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -58,7 +58,7 @@ const RacksPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('/api/racks', {
+      const response = await fetch('/racks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newRackData),
@@ -91,7 +91,7 @@ const RacksPage: React.FC = () => {
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/racks/${rackId}`, {
+      const response = await fetch(`/racks/${rackId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
