@@ -1,6 +1,7 @@
+// src/components/GoogleMapComponent.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, Polyline } from '@react-google-maps/api';
 
 // Harita stilleri
@@ -42,7 +43,8 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   vehicleSpeed,
 }) => {
   const mapRef = useRef<google.maps.Map | null>(null);
-  const [currentCenter] = useState(defaultCenter);
+  // Use a state for the map center, initialized with busLocation or defaultCenter
+  const [currentMapCenter, setCurrentMapCenter] = useState(busLocation || defaultCenter);
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -60,8 +62,13 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
 
   // Otobüs konumu değiştiğinde haritayı ortalamak için
   useEffect(() => {
-    if (mapRef.current && busLocation) {
-      mapRef.current.panTo(busLocation);
+    if (busLocation) {
+      // Update the center state to pan the map
+      setCurrentMapCenter(busLocation);
+      // If the map instance is available, directly pan to the new location for smoother transition
+      if (mapRef.current) {
+        mapRef.current.panTo(busLocation);
+      }
     }
   }, [busLocation]);
 
@@ -197,7 +204,7 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
-        center={currentCenter}
+        center={currentMapCenter} // Use the state variable for centering
         zoom={defaultZoom}
         onLoad={onLoad}
         onUnmount={onUnmount}
@@ -383,4 +390,4 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   );
 };
 
-export default GoogleMapComponent;
+export default memo(GoogleMapComponent);
