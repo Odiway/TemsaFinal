@@ -31,7 +31,7 @@ const RacksPage: React.FC = () => {
   const fetchRacks = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/racks');
+      const response = await fetch('/api/racks');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -58,7 +58,7 @@ const RacksPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('/racks', {
+      const response = await fetch('/api/racks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newRackData),
@@ -91,7 +91,7 @@ const RacksPage: React.FC = () => {
     }
     setLoading(true);
     try {
-      const response = await fetch(`/racks/${rackId}`, {
+      const response = await fetch(`/api/racks/${rackId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
