@@ -95,7 +95,7 @@ const DashboardPage = () => {
 
   // Polling hook'unu kullan
   const { latestData, isLoading, error, isConnected } = usePollingData(
-    'http://localhost:3000/api/can-data',
+    'https://temsa-final.vercel.app/api/can-data',
     { intervalMs: 200 },
   );
 
